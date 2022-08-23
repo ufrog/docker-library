@@ -1,7 +1,8 @@
 FROM centos:7
 MAINTAINER ultrafrog <ufrog.net@gmail.com>
 
-ENV TIME_ZONE="Asia/Shanghai"
+ENV BASE_DIR="/home/sentinel" \
+    TIME_ZONE="Asia/Shanghai"
 
 ARG SENTINEL_VERSION=1.8.5
 
