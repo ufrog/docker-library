@@ -17,4 +17,4 @@ RUN set -x \
     && yum clean all
 
 EXPOSE 8080
-ENTRYPOINT java -jar sentinel-dashboard.jar
+ENTRYPOINT ["java","-jar","sentinel-dashboard.jar"]
