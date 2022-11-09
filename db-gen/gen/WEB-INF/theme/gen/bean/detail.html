@@ -1,0 +1,34 @@
+<div ng-controller="beanDetailCtrl">
+    <ul class="nav nav-tabs">
+        <li ng-repeat="tab in tabs" ng-class="{active: current.tab === tab}"><a href="#" ng-click="activeTab(tab)" ng-bind="tab.name"></a></li>
+    </ul>
+    <div ng-include="tabUrl"></div>
+</div>
+
+<script type="text/javascript">
+    'use strict';
+    function beanDetailCtrl($scope) {
+        angular.extend($scope, {
+            // 初始化
+            init: function() {
+                $scope.setupTabs();
+            },
+
+            // 初始化标签
+            setupTabs: function() {
+                $scope.tabs = [];
+                $scope.tabs.push({name: '属性', url: '${app}/bean/fields'});
+                $scope.tabs.push({name: '生成代码', url: '${app}/bean/code/' + $scope.current.bean.id});
+                $scope.tabs.push({name: '模板管理', url: '${app}/bean/template/' + $scope.current.bean.id});
+                $scope.tabs.push({name: '设置', url: '${app}/bean/setup'});
+                $scope.activeTab($scope.tabs[0]);
+            },
+
+            // 激活标签
+            activeTab: function(tab) {
+                $scope.tabUrl = tab.url + '?' + $scope.timestamp();
+                $scope.current.tab = tab;
+            }
+        }).init();
+    }
+</script>

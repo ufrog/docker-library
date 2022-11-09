@@ -1,0 +1,44 @@
+package ${projects.tableModelPackage};
+
+/**
+ * ${table.name}模型
+ *
+ * @author ultrafrog, ufrog.net@gmail.com
+ * @version ${projects.version}, ${new Date().date()}
+ */
+@Entity
+@Table(name = "${table.code}")
+public class ${table.code.className()} extends Model {
+    <!-- #for(Column column: columns) -->
+    <!-- #if(!column.code.in('pk_id', 'fk_creator', 'dt_create_time', 'fk_updater', 'dt_update_time')) -->
+
+    /** ${column.name} */
+    @Column(name = "${column.code}")
+    private ${column.dialectType.classType} ${column.code.fieldName()};
+    <!-- #end -->
+    <!-- #end -->
+    <!-- #for(Column column: columns) -->
+    <!-- #if(!column.code.in('pk_id', 'fk_creator', 'dt_create_time', 'fk_updater', 'dt_update_time')) -->
+
+    /**
+     * 读取${column.name}
+     *
+     * @return
+     * @see #${column.code.fieldName()}
+     */
+    public ${column.dialectType.classType} ${column.code.getter()}() {
+        return ${column.code.toCamelCase()};
+    }
+
+    /**
+     * 设置${column.name}
+     *
+     * @param ${column.code.fieldName()}
+     * @see #${column.code.fieldName()}
+     */
+    public void ${column.code.setter()}(${column.dialectType.classType} ${column.code.fieldName()}) {
+        this.${column.code.fieldName()} = ${column.code.fieldName()};
+    }
+    <!-- #end -->
+    <!-- #end -->
+}

@@ -1,0 +1,73 @@
+<div ng-controller="addCtrl">
+    <div class="panel panel-default">
+        <div class="panel-heading">添加库表</div>
+        <div class="panel-body">
+            <form name="tableForm" action="#" method="post" class="form-horizontal" ng-submit="add($event)">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><span class="text-danger">*</span> 库表名称</label>
+                    <div class="col-sm-3">
+                        <input name="name" type="text" class="form-control" ng-model="tableFormData.name" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><span class="text-danger">*</span> 库表代码</label>
+                    <div class="col-sm-3">
+                        <input name="code" type="text" class="form-control" ng-model="tableFormData.code" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">备注</label>
+                    <div class="col-sm-6">
+                        <textarea name="remark" rows="3" class="form-control" ng-model="tableFormData.remark"></textarea>
+                    </div>
+                </div>
+                <div class="form-group margin-bottom-zero">
+                    <div class="col-sm-offset-2 col-sm-3">
+                        <button class="btn btn-success" ng-disabled="disableAddBtn()">
+                            <span ng-show="status('addBtn', ['standby'])" ng-cloak><i class="fa fa-plus"></i> 添加</span>
+                            <span ng-show="status('addBtn', ['processing'])" ng-cloak><i class="fa fa-spinner fa-spin"></i> 正在努力奔跑中...</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    'use strict';
+    function addCtrl($scope, $http) {
+        angular.extend($scope, {
+            // 初始化
+            init: function() {
+                $scope.initForm();
+            },
+
+            // 初始化表单
+            initForm: function() {
+                $scope.tableFormData = {projectId: $scope.current.project.id, code: $scope.current.project.props['table_prefix'], _request_type: 'json'};
+                $scope.status('addBtn', 'standby');
+            },
+
+            // 添加数据
+            add: function($event) {
+                $scope.stop($event);
+                $scope.status('addBtn', 'processing');
+                $http({
+                    method: 'post',
+                    url: '${app}/table/create',
+                    data: jQuery.param($scope.tableFormData)
+                }).success(function(data) {
+                    $scope.tables.push(data);
+                    $scope.initForm();
+                });
+            },
+
+            disableAddBtn: function() {
+                if ($scope.tableForm.$invalid) return true;
+                if ($scope.status('addBtn', ['processing'])) return true;
+                return false;
+            }
+        }).init();
+    }
+</script>

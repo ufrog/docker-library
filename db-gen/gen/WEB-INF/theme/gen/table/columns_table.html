@@ -1,0 +1,37 @@
+<table class="table table-striped table-hover margin-bottom-zero">
+    <colgroup>
+        <col width="15%">
+        <col width="20%">
+        <col width="15%">
+        <col width="10%">
+        <col width="10%">
+        <col width="30%">
+    </colgroup>
+    <thead>
+    <tr>
+        <th>名称</th>
+        <th>代码</th>
+        <th>类型</th>
+        <th>长度</th>
+        <th class="text-center">可空</th>
+        <th>备注</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="column in columns|orderBy:['position','order']">
+        <td><a href="#" ng-click="initColumnForm(column)"><i class="fa fa-pencil-square-o"></i></a> <span ng-bind="column.name"></span></td>
+        <td ng-bind="column.code"></td>
+        <td ng-bind="column.dialectType.name|lowercase"></td>
+        <td ng-bind="column.formattedLength"></td>
+        <td class="text-center"><i class="fa" ng-class="{'fa-times text-danger': column.nullable==='00', 'fa-check text-success': column.nullable==='01'}"></i></td>
+        <td>
+            <span ng-show="!empty(column.remark)"><span ng-bind="column.remark"></span><br></span>
+            <span ng-show="empty(column.remark) && empty(column.tableColumnDicts)">-<br></span>
+            <span ng-repeat="dict in column.tableColumnDicts"><span ng-bind="dict.value"></span> - <span ng-bind="dict.name"></span><br></span>
+        </td>
+    </tr>
+    <tr ng-show="empty(columns)">
+        <td colspan="6" class="text-center">尚未添加字段</td>
+    </tr>
+    </tbody>
+</table>

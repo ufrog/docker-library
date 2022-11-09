@@ -1,0 +1,97 @@
+<div class="table-form">
+    <form name="columnForm" action="#" class="form-horizontal" ng-submit="save($event)">
+        <!-- #first line (dialect/position/nullable) -->
+        <div class="form-group">
+            <div class="col-sm-2">
+                <select name="dialectTypeId" class="form-control" ng-model="columnFormData.dialectType" ng-options="dialectType.name for dialectType in dialectTypes" ng-change="changeDialectType()" required></select>
+            </div>
+            <div class="col-sm-2">
+                <select name="position" class="form-control" ng-model="columnFormData.position" ng-options="position.key as position.value for position in positions" ng-change="setupMoveColumns()" required></select>
+            </div>
+            <div class="col-sm-2">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="columnFormData.nullableBoolean"><span>可空</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <!-- #first line (dialect/position/nullable) -->
+
+        <!-- #second line (name/code/length/precision/scale) -->
+        <div class="form-group">
+            <div class="col-sm-3">
+                <input name="name" type="text" class="form-control" placeholder="字段名称(必填)" ng-model="columnFormData.name" required>
+            </div>
+            <div class="col-sm-3">
+                <input name="code" type="text" class="form-control" placeholder="字段代码(必填)" ng-model="columnFormData.code" required>
+            </div>
+            <div class="col-sm-2" ng-hide="hide('length')">
+                <input name="length" type="number" class="form-control" placeholder="字段长度" ng-model="columnFormData.length">
+            </div>
+            <div class="col-sm-2" ng-hide="hide('decimal')">
+                <input name="precision" type="number" class="form-control" placeholder="有效位数" ng-model="columnFormData.precision">
+            </div>
+            <div class="col-sm-2" ng-hide="hide('decimal')">
+                <input name="scale" type="number" class="form-control" placeholder="精度" ng-model="columnFormData.scale">
+            </div>
+        </div>
+        <!-- #second line (name/code/length/precision/scale) -->
+
+        <!-- #third line (remark) -->
+        <div class="form-group">
+            <div class="col-sm-12">
+                <textarea name="remark" rows="3" class="form-control" placeholder="字段备注" ng-model="columnFormData.remark"></textarea>
+            </div>
+        </div>
+        <!-- #third line (remark) -->
+
+        <!-- #forth line (dict) -->
+        <div class="form-group" ng-hide="hide('dict') || empty(columnFormData.tableColumnDicts)">
+            <div class="col-sm-4" ng-repeat="dict in columnFormData.tableColumnDicts">
+                <div class="input-group">
+                    <input type="text" value="{{dict.value}} # {{dict.code}} # {{dict.name}}" class="form-control" readonly>
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-danger" ng-click="removeDict(dict)"><i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" ng-hide="hide('dict')">
+            <div class="col-sm-2"><input type="text" class="form-control" placeholder="内容" ng-model="dictFormData.value"></div>
+            <div class="col-sm-2"><input type="text" class="form-control" placeholder="代码" ng-model="dictFormData.code"></div>
+            <div class="col-sm-2"><input type="text" class="form-control" placeholder="名称" ng-model="dictFormData.name"></div>
+            <div class="col-sm-2"><button type="button" class="btn btn-info" ng-click="addDict()"><i class="fa fa-plus"></i> 添加</button></div>
+        </div>
+        <!-- #forth line (dict) -->
+
+        <!-- #fifth line (move) -->
+        <div class="form-group">
+            <div class="col-sm-5">
+                <div class="input-group">
+                    <span class="input-group-addon"><input type="checkbox" ng-model="isMoveColumn" ng-click="setupMoveColumns()"></span>
+                    <span class="input-group-addon">移至</span>
+                    <select class="form-control" ng-model="after" ng-options="column.name for column in moveColumns" ng-disabled="!isMoveColumn"></select>
+                    <span class="input-group-addon">之后</span>
+                </div>
+            </div>
+        </div>
+        <!-- #fifth line (move) -->
+
+        <!-- #sixth line (button) -->
+        <div class="form-group margin-bottom-zero">
+            <div class="col-sm-12">
+                <button class="btn btn-success" ng-disabled="disableSaveBtn()">
+                    <span ng-show="status('saveBtn', ['standby'])"><i class="fa fa-floppy-o"></i> 保存</span>
+                    <span ng-show="status('saveBtn', ['processing'])"><i class="fa fa-spinner fa-spin"></i> 正在保存数据...</span>
+                </button>
+                <button type="button" class="btn btn-danger" ng-click="remove()" ng-show="!empty(columnFormData.id)" ng-disabled="disableDeleteBtn()">
+                    <span ng-show="status('deleteBtn', ['standby'])"><i class="fa fa-times"></i> 删除</span>
+                    <span ng-show="status('deleteBtn', ['processing'])"><i class="fa fa-spinner fa-spin"></i> 正在删除数据...</span>
+                </button>
+                <button type="button" class="btn btn-default" ng-click="initColumnForm()" ng-show="!empty(columnFormData.id)"><i class="fa fa-ban"></i> 取消</button>
+            </div>
+        </div>
+        <!-- #sixth line (button) -->
+    </form>
+</div>

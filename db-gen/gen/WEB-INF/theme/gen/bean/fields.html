@@ -1,0 +1,159 @@
+<div ng-controller="beanFieldsCtrl">
+    <!-- #fields -->
+    <table class="table table-striped table-hover margin-bottom-zero">
+        <colgroup>
+            <col width="20%">
+            <col width="30%">
+            <col width="30%">
+            <col width="20%">
+        </colgroup>
+        <thead>
+        <tr>
+            <th>名称</th>
+            <th>代码</th>
+            <th>默认值</th>
+            <th>类型</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="field in fields|orderBy:'code'" ng-hide="empty(fields)">
+            <td><a href="#" ng-click="fieldFunc.form(field)"><i class="fa fa-pencil-square"></i></a> <span ng-bind="field.name"></span></td>
+            <td ng-bind="field.code"></td>
+            <td ng-bind="field.defaultValue|empty:'-'"></td>
+            <td ng-bind="field.clazz"></td>
+        </tr>
+        <tr ng-show="empty(fields)">
+            <td colspan="4" class="text-center">尚未添加属性</td>
+        </tr>
+        </tbody>
+    </table>
+    <!-- #fields -->
+
+    <!-- #form -->
+    <div class="table-form">
+        <form name="fieldForm" class="form-horizontal" ng-submit="fieldFunc.save($event)">
+            <div class="form-group">
+                <div class="col-sm-3">
+                    <input type="text" name="name" class="form-control" placeholder="填写属性名称" ng-model="fieldFormData.name" required>
+                </div>
+                <div class="col-sm-3">
+                    <input type="text" name="code" class="form-control" placeholder="填写属性代码" ng-model="fieldFormData.code" required>
+                </div>
+                <div class="col-sm-3">
+                    <input type="text" name="clazz" class="form-control" placeholder="填写属性类型" ng-model="fieldFormData.clazz" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <textarea name="defaultValue" rows="3" class="form-control" placeholder="填写字段默认值" ng-model="fieldFormData.defaultValue"></textarea>
+                </div>
+            </div>
+            <div class="form-group margin-bottom-zero">
+                <div class="col-sm-12">
+                    <button class="btn btn-success" ng-disabled="disableSaveBtn()">
+                        <span ng-show="status('saveBtn', ['standby'])"><i class="fa fa-floppy-o"></i> 保存</span>
+                        <span ng-show="status('saveBtn', ['processing'])"><i class="fa fa-spinner fa-spin"></i> 正在保存数据...</span>
+                    </button>
+                    <button type="button" class="btn btn-danger" ng-show="!empty(fieldFormData.id)" ng-click="fieldFunc.delete()"><i class="fa fa-times"></i> 删除</button>
+                    <button type="button" class="btn btn-default" ng-show="!empty(fieldFormData.id)" ng-click="fieldFunc.form()"><i class="fa fa-times-circle"></i> 取消</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- #form -->
+</div>
+
+<script type="text/javascript">
+    'use strict';
+    function beanFieldsCtrl($scope, $http) {
+        angular.extend($scope, {
+            // 初始化
+            init: function() {
+                $scope.fieldFunc.find();
+                $scope.fieldFunc.form();
+            },
+
+            // 字段方法集合
+            fieldFunc: {
+                // 查询
+                find: function() {
+                    $http({
+                        method: 'get',
+                        url: '${app}/bean/find_fields/' + $scope.current.bean.id + '?_request_type=json'
+                    }).success(function(data) {
+                        $scope.fields = data;
+                    })
+                },
+
+                // 表单
+                form: function(field) {
+                    $scope.status('saveBtn', 'standby');
+                    $scope.fieldFormData = {beanId: $scope.current.bean.id, _request_type: 'json'};
+                    if (angular.isObject(field)) {
+                        $scope.fieldFormData.id = field.id;
+                        $scope.fieldFormData.name = field.name;
+                        $scope.fieldFormData.code = field.code;
+                        $scope.fieldFormData.defaultValue = field.defaultValue;
+                        $scope.fieldFormData.clazz = field.clazz;
+                    }
+                },
+
+                // 保存字段
+                save: function($event) {
+                    $scope.stop($event);
+                    $scope.status('saveBtn', 'processing');
+                    if ($scope.empty($scope.fieldFormData.id)) {
+                        $scope.fieldFunc.create($scope.fieldFormData);
+                    } else {
+                        $scope.fieldFunc.update($scope.fieldFormData);
+                    }
+                },
+
+                // 创建字段
+                create: function(data) {
+                    $http({
+                        method: 'post',
+                        url: '${app}/bean/add_field',
+                        data: jQuery.param(data)
+                    }).success(function(data) {
+                        $scope.status('saveBtn', 'standby');
+                        $scope.fields.push(data);
+                        $scope.fieldFunc.form();
+                    });
+                },
+
+                // 更新字段
+                update: function(data) {
+                    $http({
+                        method: 'put',
+                        url: '${app}/bean/update_field/' + data.id,
+                        data: data
+                    }).success(function(data) {
+                        $scope.status('saveBtn', 'standby');
+                        $scope.updateFromArray(data.data, $scope.fields);
+                        $scope.fieldFunc.form();
+                    });
+                },
+
+                // 删除字段
+                delete: function() {
+                    $http({
+                        method: 'delete',
+                        url: '${app}/bean/delete_field/' + $scope.fieldFormData.id
+                    }).success(function(data) {
+                        console.log(data);
+                        $scope.removeFromArray(data.data, $scope.fields);
+                        $scope.fieldFunc.form();
+                    });
+                }
+            },
+
+            // 判断保存按钮是否有效
+            disableSaveBtn: function() {
+                if ($scope.fieldForm.$invalid) return true;
+                if ($scope.status('saveBtn', ['processing'])) return true;
+                return false;
+            }
+        }).init();
+    }
+</script>

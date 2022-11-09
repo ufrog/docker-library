@@ -1,0 +1,88 @@
+/* define */
+/* tag styles */
+body {
+  padding-top: 70px;
+  font-family: "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+/* angular styles */
+[ng\:cloak],
+[ng-cloak],
+[data-ng-cloak],
+[x-ng-cloak],
+.ng-cloak,
+.x-ng-cloak {
+  display: none !important; }
+
+/* bootstrap styles */
+.container-lt {
+  width: 400px; }
+
+.row {
+  margin-right: -10px;
+  margin-left: -10px; }
+  .row [class^=col-] {
+    padding-right: 10px;
+    padding-left: 10px; }
+
+.form-horizontal .form-group {
+  margin-right: -5px;
+  margin-left: -5px; }
+  .form-horizontal .form-group [class^=col-] {
+    padding-right: 5px;
+    padding-left: 5px; }
+  .form-horizontal .form-group .toggle-switch {
+    min-height: 34px;
+    padding-top: 4px; }
+
+.form-control-toggle {
+  min-height: 34px;
+  padding-top: 4px;
+  padding-bottom: 2px;
+  margin-bottom: 0; }
+
+.table-form {
+  border-top: 1px solid #dddddd;
+  padding: 20px 0; }
+  .table-form.table-form-noborder {
+    border-top: 0; }
+
+.panel .table-form {
+  padding-right: 20px;
+  padding-left: 20px; }
+.panel.panel-tab {
+  border-top: 0;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0; }
+
+.table-footer {
+  margin-top: -10px; }
+
+/*  */
+.margin-top {
+  margin-top: 20px; }
+
+.margin-bottom {
+  margin-bottom: 20px; }
+
+.margin-bottom-zero {
+  margin-bottom: 0; }
+
+.cursor-hand {
+  cursor: pointer; }
+
+.nowrap {
+  white-space: nowrap; }
+
+figure {
+  position: relative; }
+  figure .btn-copy {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-top-left-radius: 0;
+    border-bottom-right-radius: 0; }
+    figure .btn-copy:focus, figure .btn-copy:active:focus, figure .btn-copy.active:focus, figure .btn-copy.focus
+    figure .btn-copy:active.focus, figure .btn-copy.active.focus {
+      outline: none; }
+
+/*# sourceMappingURL=ufrog-gen.css.map */

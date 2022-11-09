@@ -1,0 +1,12 @@
+--
+-- table `${table.code}`
+--
+
+CREATE TABLE `${table.code}` (
+  <!-- #for(Column column: columns) -->
+  `${column.code}` ${column.typeStr()} ${column.nullableStr()} COMMENT '${column.name}',
+  <!-- #end -->
+  <!-- #for(Index index: indexs) -->
+  ${index.mysqlIndex()}<!-- #if(!for.last) -->,<!-- #end -->
+  <!-- #end -->
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='${table.name}'

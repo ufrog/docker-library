@@ -1,0 +1,40 @@
+<div ng-controller="tableConfigCtrl">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="list-group">
+                <a href="#" class="list-group-item" ng-repeat="fun in funs" ng-class="{active: current.fun===fun}" ng-bind="fun.name" ng-click="activeFun(fun)"></a>
+            </div>
+        </div>
+        <div class="col-sm-9" ng-include="funUrl"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    'use strict';
+    function tableConfigCtrl($scope) {
+        angular.extend($scope, {
+            // 初始化
+            init: function() {
+                $scope.setupFun();
+            },
+
+            // 设置功能
+            setupFun: function() {
+                $scope.funs = [];
+                $scope.funs.push({name: '基础设置', url: '${app}/table/config/basic'});
+                $scope.funs.push({name: '默认字段', url: '${app}/table/config/columns'});
+                $scope.funs.push({name: '默认索引', url: '${app}/table/config/indexes'});
+                $scope.funs.push({name: '脚本模板', url: '${app}/table/config/template/' + $scope.current.project.id + '/table_template_dll'});
+                $scope.funs.push({name: '模型模板', url: '${app}/table/config/template/' + $scope.current.project.id + '/table_template_entity'});
+                $scope.funs.push({name: '导入数据库', url: '${app}/table/config/batchs'});
+                $scope.activeFun($scope.funs[0]);
+            },
+
+            // 激活功能
+            activeFun: function(fun) {
+                $scope.funUrl = fun.url + '?' + $scope.timestamp();
+                $scope.current.fun = fun;
+            }
+        }).init();
+    }
+</script>

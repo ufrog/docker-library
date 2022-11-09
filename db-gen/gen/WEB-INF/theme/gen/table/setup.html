@@ -1,0 +1,99 @@
+<div ng-controller="setupCtrl">
+    <div class="panel panel-default panel-tab">
+        <div class="panel-body">
+            <form name="tableForm" method="post" action="#" class="form-horizontal" ng-submit="update($event)">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><i class="text-danger">*</i> 库表名称</label>
+                    <div class="col-sm-4">
+                        <input type="text" name="name" class="form-control" ng-model="tableFormData.name" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><i class="text-danger">*</i> 库表代码</label>
+                    <div class="col-sm-4">
+                        <input type="text" name="code" class="form-control" ng-model="tableFormData.code" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">备注</label>
+                    <div class="col-sm-6">
+                        <textarea name="remark" rows="3" class="form-control" ng-model="tableFormData.remark"></textarea>
+                    </div>
+                </div>
+                <div class="form-group margin-bottom-zero">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button class="btn btn-success" ng-disabled="disableSaveBtn()">
+                            <span ng-show="status('saveBtn', ['standby'])"><i class="fa fa-floppy-o"></i> 保存</span>
+                            <span ng-show="status('saveBtn', ['processing'])"><i class="fa fa-spinner fa-spin"></i> 正在保存数据...</span>
+                        </button>
+                        <button type="button" class="btn btn-danger" ng-click="delete()" ng-disabled="disableDeleteBtn()">
+                            <span ng-show="status('deleteBtn', ['standby'])"><i class="fa fa-times"></i> 删除</span>
+                            <span ng-show="status('deleteBtn', ['processing'])"><i class="fa fa-spinner fa-spin"></i> 正在删除数据...</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    'use strict';
+    function setupCtrl($scope, $http) {
+        angular.extend($scope, {
+            // 初始化
+            init: function() {
+                $scope.status('saveBtn', 'standby');
+                $scope.status('deleteBtn', 'standby');
+                $scope.setupTable();
+            },
+
+            // 设置库表
+            setupTable: function() {
+                $scope.tableFormData = angular.extend({_request_type: 'json'}, $scope.current.table);
+                $scope.deleteProps($scope.tableFormData, ['tableColumns', 'tableIndexes', 'creator', 'createTime', 'updater', 'updateTime']);
+            },
+
+            // 更新库表
+            update: function($event) {
+                $scope.stop($event);
+                $scope.status('saveBtn', 'processing');
+                $http({
+                    method: 'put',
+                    url: '${app}/table/update/' + $scope.tableFormData.id,
+                    data: $scope.tableFormData
+                }).success(function(data) {
+                    $scope.updateFromArray(data, $scope.tables);
+                    $scope.status('saveBtn', 'standby');
+                });
+            },
+
+            // 删除库表
+            delete: function() {
+                $scope.status('deleteBtn', 'processing');
+                $http({
+                    method: 'delete',
+                    url: '${app}/table/delete/' + $scope.tableFormData.id
+                }).success(function(data) {
+                    $scope.removeFromArray(data, $scope.tables);
+                    $scope.status('deleteBtn', 'standby');
+                });
+            },
+
+            // 判断保存按钮是否有效
+            disableSaveBtn: function() {
+                if ($scope.tableForm.$invalid) return true;
+                if ($scope.status('saveBtn', ['processing'])) return true;
+                if ($scope.status('deleteBtn', ['processing'])) return true;
+                return false;
+            },
+
+            // 判断删除按钮是否有效
+            disableDeleteBtn: function() {
+                if ($scope.status('saveBtn', ['processing'])) return true;
+                if ($scope.status('deleteBtn', ['processing'])) return true;
+                return false;
+            }
+        }).init();
+    }
+</script>
